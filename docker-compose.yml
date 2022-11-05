@@ -1,0 +1,30 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+    container_name: nextauth-example-app
+    ports:
+      - "3000:3000"
+    tty: true
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.9.3
+    container_name: nextauth-example-mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file:
+      - app/.env
+    volumes:
+      - mariadb:/var/lib/mysql
+      - ./mariadb:/docker-entrypoint-initdb.d
+
+volumes:
+  mariadb:
+    name: nextauth-example-mariadb
